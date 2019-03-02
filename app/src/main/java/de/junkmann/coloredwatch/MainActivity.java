@@ -1,15 +1,17 @@
 package de.junkmann.coloredwatch;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.wear.widget.BoxInsetLayout;
 import android.support.wearable.activity.WearableActivity;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends WearableActivity {
 
-  private ValueAnimator colorAnim;
+  private BoxInsetLayout parentLayout;
+  private Timer timer;
 
 
   @Override
@@ -17,24 +19,45 @@ public class MainActivity extends WearableActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    BoxInsetLayout parentLayout = findViewById(R.id.parentLayout);
+    parentLayout = findViewById(R.id.parentLayout);
 
     setAmbientEnabled();
 
     parentLayout.setBackgroundColor(Color.RED);
 
-    colorAnim = ObjectAnimator.ofInt(parentLayout, "backgroundColor", Color.RED, Color.rgb(255, 0, 1));
+    timer = new Timer();
 
-    colorAnim.setDuration(20000);
-    colorAnim.setEvaluator(new HsvEvaluator());
-    colorAnim.setRepeatCount(ValueAnimator.INFINITE);
-    colorAnim.start();
+
+
+    MyTimerTask myTimerTask = new MyTimerTask();
+    //schedule to change background color every second
+    timer.schedule(myTimerTask, 1000, 1000);
+
+
   }
 
   @Override
   protected void onStop() {
     super.onStop();
-    colorAnim.end();
+    timer.cancel();
+  }
+
+
+  class MyTimerTask extends TimerTask {
+
+    @Override
+    public void run() {
+      //Since we want to change something which is on hte UI
+      //so we have to run on UI thread..
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          Random random = new Random();//this is random generator
+          parentLayout.setBackgroundColor(
+              Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+        }
+      });
+    }
   }
 }
 
