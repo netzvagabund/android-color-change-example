@@ -1,3 +1,8 @@
+/*
+Found on http://cogitolearning.co.uk/2014/01/android-property-animations-evaluators/ and the corresponding github repo:
+https://github.com/mikailsheikh/cogitolearning-examples/blob/master/PropertyAnimations/src/uk/co/cogitolearning/propertyanimations_example/HsvEvaluator.java
+ */
+
 package de.junkmann.coloredwatch;
 
 import android.animation.TypeEvaluator;
